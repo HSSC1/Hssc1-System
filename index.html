@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบบริหารงานปฏิบัติการ | กลุ่มวิศวกรรมการแพทย์</title>
+    
+    <!-- Google Fonts: Noto Serif Thai & Noto Serif -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@300;400;500;600;700;800&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-dark: #172554;
+            --primary-light: #3b82f6;
+            --secondary: #0f172a;
+            --accent: #2563eb;
+            --success: #059669;
+            --success-bg: #ecfdf5;
+            --warning: #d97706;
+            --warning-bg: #fffbeb;
+            --danger: #dc2626;
+            --danger-bg: #fef2f2;
+            --info: #0284c7;
+            --info-bg: #f0f9ff;
+            --bg-page: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --text-light: #94a3b8;
+            --border: #e2e8f0;
+            --border-focus: #93c5fd;
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --radius-sm: 6px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+            --shadow-lg: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+        }
+
+        body.dark-theme {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #f8fafc;
+            --bg-page: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --success-bg: #064e3b;
+            --success: #34d399;
+            --warning-bg: #78350f;
+            --warning: #fbbf24;
+            --danger-bg: #7f1d1d;
+            --danger: #f87171;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Serif Thai', 'Noto Serif', serif;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 1.5rem;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, #172554 0%, #1e3a8a 50%, #1e40af 100%);
+            color: #ffffff;
+            border-radius: var(--radius-lg);
+            padding: 2rem 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .header-content h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .header-content p {
+            color: #bfdbfe;
+            font-size: 0.95rem;
+            font-weight: 400;
+            max-width: 650px;
+        }
+
+        .cloud-badge {
+            background-color: rgba(16, 185, 129, 0.2);
+            border: 1px solid #34d399;
+            color: #a7f3d0;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.65rem;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-weight: 600;
+        }
+        
+        .cloud-badge.offline {
+            background-color: rgba(245, 158, 11, 0.2);
+            border-color: #fbbf24;
+            color: #fde68a;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            z-index: 1;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1.35rem 1.5rem;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            transition: all 0.25s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+            border-color: #cbd5e1;
+        }
+
+        .metric-icon-box {
+            width: 52px;
+            height: 52px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            flex-shrink: 0;
+        }
+
+        .metric-meta h3 {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 0.15rem;
+        }
+
+        .metric-meta .metric-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.2;
+        }
+
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @media (max-width: 1100px) {
+            .workspace-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.75rem;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+        }
+
+        /* Edit Mode Highlights */
+        .form-card { transition: all 0.3s ease; border: 2px solid transparent; }
+        .form-card.edit-mode { border-color: var(--warning); box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.1); background-color: var(--warning-bg); }
+        body.dark-theme .form-card.edit-mode { background-color: rgba(217, 119, 6, 0.05); }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.85rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-header h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .form-group { margin-bottom: 1.15rem; }
+        .form-group label { display: block; margin-bottom: 0.4rem; font-size: 0.9rem; font-weight: 600; color: var(--text-main); }
+        .form-control {
+            width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border);
+            border-radius: var(--radius-sm); font-size: 0.95rem; color: var(--text-main);
+            background-color: var(--bg-card); outline: none; transition: all 0.2s ease;
+        }
+        body.dark-theme .form-control { background-color: #0f172a; color: #f1f5f9; }
+        body.dark-theme select option { background-color: #1e293b; color: #f1f5f9; }
+        .form-control:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12); }
+        .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+
+        /* Custom Multi-Select for Participants */
+        .multi-select-container { position: relative; width: 100%; }
+        .multi-select-header {
+            width: 100%; padding: 0.65rem 0.9rem; border: 1px solid var(--border);
+            border-radius: var(--radius-sm); font-size: 0.95rem; color: var(--text-main);
+            background-color: var(--bg-card); cursor: pointer; display: flex;
+            justify-content: space-between; align-items: center; min-height: 46px;
+            transition: all 0.2s ease;
+        }
+        body.dark-theme .multi-select-header { background-color: #0f172a; color: #f1f5f9; }
+        .multi-select-header:hover { border-color: var(--accent); }
+        .multi-select-options {
+            display: none; position: absolute; top: 100%; left: 0; right: 0;
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius-sm); margin-top: 0.25rem; max-height: 220px;
+            overflow-y: auto; z-index: 100; box-shadow: var(--shadow-lg);
+        }
+        .multi-select-options.show { display: block; animation: fadeIn 0.2s ease; }
+        .multi-select-option {
+            padding: 0.65rem 0.9rem; display: flex; align-items: center; gap: 0.75rem;
+            cursor: pointer; transition: background 0.2s; border-bottom: 1px solid var(--border);
+            font-size: 0.95rem; font-weight: 500;
+        }
+        .multi-select-option input[type="checkbox"] {
+            width: 16px; height: 16px; accent-color: var(--primary); cursor: pointer;
+        }
+        .multi-select-option:last-child { border-bottom: none; }
+        .multi-select-option:hover { background: var(--bg-page); color: var(--primary); }
+        body.dark-theme .multi-select-options { background: #1e293b; border-color: #334155; }
+        body.dark-theme .multi-select-option { border-color: #334155; }
+        body.dark-theme .multi-select-option:hover { background: #0f172a; color: var(--primary-light); }
+        .selected-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; flex: 1; }
+        .tag-pill {
+            background: var(--primary-light); color: white; padding: 0.2rem 0.65rem;
+            border-radius: 9999px; font-size: 0.8rem; font-weight: 600; display: inline-flex;
+            align-items: center; gap: 0.35rem; box-shadow: var(--shadow-sm);
+        }
+
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+            padding: 0.65rem 1.25rem; border-radius: var(--radius-sm); font-size: 0.9rem;
+            font-weight: 600; cursor: pointer; border: 1px solid transparent;
+            transition: all 0.2s ease; text-decoration: none;
+        }
+        .btn-primary { background-color: var(--primary); color: #ffffff; }
+        .btn-primary:hover { background-color: var(--primary-dark); }
+        .btn-secondary { background-color: #f1f5f9; color: #1e293b; border-color: var(--border); }
+        .btn-secondary:hover { background-color: #e2e8f0; }
+        body.dark-theme .btn-secondary { background-color: #334155; color: #f1f5f9; border-color: #475569; }
+        body.dark-theme .btn-secondary:hover { background-color: #475569; }
+        .btn-accent { background-color: #f0fdf4; color: #166534; border-color: #bbf7d0; }
+        .btn-accent:hover { background-color: #dcfce7; }
+        body.dark-theme .btn-accent { background-color: #14532d; color: #86efac; border-color: #166534; }
+        body.dark-theme .btn-accent:hover { background-color: #166534; }
+        .btn-sm { padding: 0.4rem 0.75rem; font-size: 0.825rem; }
+
+        .filter-section { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem; align-items: center; }
+        .search-wrapper { position: relative; flex: 1 1 240px; }
+        .search-wrapper i { position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%); color: var(--text-light); font-size: 0.9rem; }
+        .search-wrapper input { padding-left: 2.4rem; }
+
+        /* Dropdown Menu for Task Actions */
+        .dropdown { position: relative; display: inline-block; text-align: left; }
+        .dropdown-btn { background: transparent; border: none; font-size: 1.1rem; color: var(--text-muted); cursor: pointer; padding: 0.25rem 0.6rem; border-radius: var(--radius-sm); transition: all 0.2s; }
+        .dropdown-btn:hover { background: var(--border); color: var(--text-main); }
+        .dropdown-content { display: none; position: absolute; right: 0; top: 100%; background-color: var(--bg-card); min-width: 190px; box-shadow: var(--shadow-lg); z-index: 100; border-radius: var(--radius-sm); border: 1px solid var(--border); overflow: hidden; }
+        .dropdown-content.show { display: block; animation: fadeIn 0.2s ease; }
+        .dropdown-content a { color: var(--text-main); padding: 0.75rem 1rem; text-decoration: none; display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem; border-bottom: 1px solid var(--border); font-weight: 500; transition: background 0.2s; cursor: pointer; }
+        .dropdown-content a:hover { background-color: var(--bg-page); color: var(--primary); }
+        .dropdown-content a:last-child { border-bottom: none; }
+        .dropdown-content a.text-danger:hover { color: var(--danger); background-color: var(--danger-bg); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+        .table-container { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-md); }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem; }
+        thead th { background-color: #f8fafc; color: var(--text-muted); font-weight: 700; padding: 0.85rem 1rem; border-bottom: 2px solid var(--border); font-size: 0.85rem; white-space: nowrap; }
+        tbody td { padding: 1.1rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; background-color: var(--bg-card); }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:hover td { background-color: rgba(148, 163, 184, 0.1); }
+
+        .badge { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.25rem 0.65rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; white-space: nowrap; }
+        .badge-onsite { background: #fee2e2; color: #991b1b; }
+        .badge-meeting { background: #dbeafe; color: #1e40af; }
+        .badge-office { background: #e0e7ff; color: #3730a3; }
+        .badge-personal { background: #fef3c7; color: #92400e; }
+        .badge-tor { background: #dcfce7; color: #166534; }
+        
+        body.dark-theme .badge-onsite { background: #7f1d1d; color: #fca5a5; }
+        body.dark-theme .badge-meeting { background: #1e3a8a; color: #93c5fd; }
+        body.dark-theme .badge-office { background: #312e81; color: #a5b4fc; }
+        body.dark-theme .badge-personal { background: #78350f; color: #fcd34d; }
+        body.dark-theme .badge-tor { background: #14532d; color: #86efac; }
+
+        .status-badge { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; font-weight: 600; padding: 0.25rem 0.6rem; border-radius: var(--radius-sm); }
+        .status-planned { background: #eff6ff; color: #1d4ed8; }
+        .status-inprogress { background: #fffbeb; color: #b45309; }
+        .status-done { background: #ecfdf5; color: #047857; }
+
+        .view-tabs { display: inline-flex; background: #f1f5f9; padding: 0.25rem; border-radius: var(--radius-sm); gap: 0.25rem; }
+        .view-tab-btn { padding: 0.35rem 0.85rem; border-radius: var(--radius-sm); border: none; background: transparent; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: all 0.2s; }
+        .view-tab-btn.active { background: #ffffff; color: var(--primary); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        body.dark-theme .view-tabs { background: #0f172a; }
+        body.dark-theme .view-tab-btn.active { background: #1e293b; color: #f1f5f9; }
+
+        .timeline-container { display: flex; flex-direction: column; gap: 1.5rem; }
+        .timeline-day-group { border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; background: var(--bg-card); }
+        .timeline-day-header { background: var(--bg-page); padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border); font-weight: 700; color: var(--primary); display: flex; justify-content: space-between; align-items: center; }
+        .timeline-day-items { padding: 1rem 1.25rem; display: flex; flex-direction: column; gap: 0.85rem; }
+        .timeline-item-card { border-left: 4px solid var(--accent); padding: 0.6rem 0.9rem; background: var(--bg-page); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); display: none; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(2px); }
+        .modal-overlay.active { display: flex; }
+        .modal-card { background: var(--bg-card); padding: 1.75rem; border-radius: var(--radius-lg); max-width: 420px; width: 90%; box-shadow: var(--shadow-lg); text-align: center; }
+        .modal-card h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main); }
+        .modal-card p { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+        .modal-actions { display: flex; gap: 0.75rem; justify-content: center; }
+
+        .toast-notification { position: fixed; bottom: 2rem; right: 2rem; background: var(--secondary); color: #ffffff; padding: 0.75rem 1.25rem; border-radius: var(--radius-sm); box-shadow: var(--shadow-lg); display: none; align-items: center; gap: 0.6rem; font-size: 0.9rem; font-weight: 500; z-index: 1100; animation: slideIn 0.3s ease; }
+        .toast-notification.active { display: flex; }
+        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        /* Settings Modal Styles */
+        .settings-section { margin-bottom: 1.5rem; text-align: left; }
+        .settings-list { border: 1px solid var(--border); border-radius: var(--radius-sm); max-height: 200px; overflow-y: auto; margin-top: 0.5rem; background: var(--bg-card); }
+        .settings-item { display: flex; justify-content: space-between; padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); align-items: center; gap: 0.5rem; }
+        .settings-item:last-child { border-bottom: none; }
+        .settings-item input { border: 1px solid transparent; background: transparent; font-size: 0.9rem; flex: 1; color: var(--text-main); outline: none; padding: 0.25rem 0.5rem; border-radius: var(--radius-sm); transition: border-color 0.2s; }
+        .settings-item input:focus { border-color: var(--accent); background: var(--bg-page); }
+        body.dark-theme .settings-item input:focus { background: #0f172a; }
+
+        @media print {
+            body { background: #ffffff; padding: 0; }
+            .no-print, header .header-actions, .card-header .btn, .filter-section, .dropdown, th:last-child { display: none !important; }
+            .container { max-width: 100%; }
+            header { background: none; color: #000; padding: 1rem 0; border-bottom: 2px solid #000; margin-bottom: 1.5rem; box-shadow: none; }
+            header .header-content h1 { color: #000; }
+            header .header-content p { color: #555; }
+            .cloud-badge { display: none !important; }
+            .metrics-grid { grid-template-columns: repeat(4, 1fr); margin-bottom: 1.5rem; }
+            .metric-card { box-shadow: none; border: 1px solid #ccc; padding: 0.75rem; }
+            .workspace-grid { grid-template-columns: 1fr; }
+            .card { border: none; box-shadow: none; padding: 0; }
+            .table-container { border: 1px solid #000; }
+            thead th { background-color: #f0f0f0 !important; color: #000; border-bottom: 1px solid #000; }
+            tbody td { border-bottom: 1px solid #ddd; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="header-content">
+            <h1>
+                <i class="fa-solid fa-compass-drafting"></i> ระบบบริหารงาน กลุ่มวิศวกรรมการแพทย์
+                <span id="cloud-status-badge" class="cloud-badge offline"><i class="fa-solid fa-cloud-arrow-down"></i> Local Mode</span>
+            </h1>
+            <p>บันทึกภารกิจ ติดตามความก้าวหน้า นัดหมาย ตรวจสอบหน้างาน และซิงค์ข้อมูลร่วมกับทีมผ่านระบบ Cloud Data</p>
+        </div>
+        <div class="header-actions no-print">
+            <button class="btn btn-secondary btn-sm" onclick="toggleDarkMode()" title="สลับโหมดกลางคืน">
+                <i class="fa-solid fa-moon" id="dark-mode-icon"></i>
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="exportToICS()" title="ดาวน์โหลดปฏิทิน iCal (.ics)">
+                <i class="fa-solid fa-calendar-plus" style="color: #2563eb;"></i> โหลด .ICS ปฏิทิน
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="exportToCSV()" title="ส่งออกตารางเป็นไฟล์ Excel (CSV)">
+                <i class="fa-solid fa-file-excel" style="color: #16a34a;"></i> ส่งออก CSV
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="exportBackupJSON()" title="สำรองไฟล์ JSON สำหรับส่งให้หัวหน้าทีม">
+                <i class="fa-solid fa-download"></i> สำรองข้อมูล
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="openSettings()" title="จัดการรายชื่อและหมวดหมู่งาน">
+                <i class="fa-solid fa-gears" style="color: var(--primary);"></i> ตั้งค่าระบบ
+            </button>
+            <label class="btn btn-accent btn-sm" style="cursor:pointer;" title="หัวหน้าทีม: นำเข้าไฟล์ JSON ของลูกทีมเพื่อรวมเป็นข้อมูลเดียวกัน">
+                <i class="fa-solid fa-object-group"></i> นำเข้า/รวมไฟล์ (Merge JSON)
+                <input type="file" id="json-importer" accept=".json" style="display:none;" onchange="importAndMergeJSON(event)">
+            </label>
+            <button class="btn btn-secondary btn-sm" onclick="window.print()">
+                <i class="fa-solid fa-print"></i> พิมพ์รายงาน
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="promptReset()" id="btn-reset">
+                <i class="fa-solid fa-arrow-rotate-right"></i> ล้างข้อมูล
+            </button>
+        </div>
+    </header>
+
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="metric-icon-box" style="background: #e0f2fe; color: #0284c7;">
+                <i class="fa-solid fa-rectangle-list"></i>
+            </div>
+            <div class="metric-meta">
+                <h3>ภารกิจทีมทั้งหมด</h3>
+                <div class="metric-value" id="metric-total">0</div>
+            </div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-icon-box" style="background: #fef3c7; color: #d97706;">
+                <i class="fa-solid fa-hourglass-half"></i>
+            </div>
+            <div class="metric-meta">
+                <h3>ตามแผน / รอดำเนินการ</h3>
+                <div class="metric-value" id="metric-pending">0</div>
+            </div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-icon-box" style="background: #dcfce7; color: #16a34a;">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div class="metric-meta">
+                <h3>เสร็จสิ้นสมบูรณ์</h3>
+                <div class="metric-value" id="metric-completed">0</div>
+            </div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-icon-box" style="background: #fee2e2; color: #dc2626;">
+                <i class="fa-solid fa-map-location-dot"></i>
+            </div>
+            <div class="metric-meta">
+                <h3>ลงพื้นที่ / หน้างาน / ภัยพิบัติ</h3>
+                <div class="metric-value" id="metric-onsite">0</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="workspace-grid">
+        <!-- Left: Form Entry -->
+        <div class="card no-print form-card" id="form-container">
+            <div class="card-header">
+                <h2><i class="fa-solid fa-pen-nib" style="color: var(--accent);"></i> <span id="form-heading">บันทึกภารกิจใหม่</span></h2>
+            </div>
+            <form id="task-form" onsubmit="handleFormSubmit(event)">
+                <input type="hidden" id="task-id">
+
+                <div class="form-group">
+                    <label>หัวข้องาน / ภารกิจ <span style="color: var(--danger); font-weight: bold;">*</span></label>
+                    <input type="text" id="task-title" class="form-control" placeholder="เช่น ตรวจสอบหน้างาน, ประชุม, จัดทำ TOR..." required>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label>วันที่ดำเนินการ <span style="color: var(--danger); font-weight: bold;">*</span></label>
+                        <input type="date" id="task-date" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>เวลา (ถ้ามี)</label>
+                        <input type="time" id="task-time" class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label>หมวดหมู่งาน</label>
+                        <select id="task-category" class="form-control">
+                            <!-- Populated dynamically via JS -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>สถานะงาน</label>
+                        <select id="task-status" class="form-control">
+                            <option value="planned">ตามแผน (Planned)</option>
+                            <option value="inprogress">กำลังดำเนินการ (In Progress)</option>
+                            <option value="done">เสร็จสิ้น (Completed)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>สถานที่ / หน่วยงาน</label>
+                    <input type="text" id="task-location" class="form-control" placeholder="เช่น รพ.น่าน, ศบส., อบจ.ลำพูน">
+                </div>
+
+                <div class="form-group">
+                    <label>ผู้รับผิดชอบ / ผู้ร่วมงาน <span style="font-size: 0.8rem; font-weight: 400; color: var(--text-muted);">(เลือกได้มากกว่า 1 ท่าน)</span></label>
+                    <div class="multi-select-container" id="participants-container">
+                        <div class="multi-select-header" onclick="toggleMultiSelect(event)">
+                            <div class="selected-tags" id="selected-tags-display">
+                                <span style="color: var(--text-muted);">คลิกเลือกรายชื่อผู้รับผิดชอบ...</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-down" style="color: var(--text-muted);"></i>
+                        </div>
+                        <div class="multi-select-options" id="participants-dropdown">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                        <input type="hidden" id="task-participants">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>รายละเอียด / บันทึกความก้าวหน้า</label>
+                    <textarea id="task-notes" class="form-control" rows="3" placeholder="ระบุข้อตกลง รายละเอียด หรือข้อสังเกตเพิ่มเติม..."></textarea>
+                </div>
+
+                <div style="display: flex; gap: 0.5rem; margin-top: 1.5rem;">
+                    <button type="submit" class="btn btn-primary" id="form-submit-btn" style="flex: 1;">
+                        <i class="fa-solid fa-floppy-disk"></i> เพิ่มข้อมูลภารกิจ
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="btn-cancel" onclick="resetForm()" style="display: none;">
+                        ยกเลิกการแก้ไข
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Right: Task List & Management -->
+        <div class="card">
+            <div class="card-header" style="flex-wrap: wrap; gap: 1rem;">
+                <h2><i class="fa-solid fa-list-check" style="color: var(--accent);"></i> แผนปฏิบัติการ กลุ่มวิศวกรรมการแพทย์</h2>
+                <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                    <button class="btn btn-primary btn-sm no-print" onclick="focusAddForm()" title="เลื่อนไปที่ฟอร์มเพิ่มข้อมูล">
+                        <i class="fa-solid fa-plus"></i> เพิ่มภารกิจ
+                    </button>
+                    <div class="view-tabs no-print">
+                        <button id="view-tab-table" class="view-tab-btn active" onclick="switchView('table')">
+                            <i class="fa-solid fa-table-list"></i> ตาราง
+                        </button>
+                        <button id="view-tab-timeline" class="view-tab-btn" onclick="switchView('timeline')">
+                            <i class="fa-solid fa-timeline"></i> ไทม์ไลน์
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="filter-section no-print">
+                <div class="search-wrapper">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="search-input" class="form-control" placeholder="ค้นหาภารกิจ, สถานที่, ผู้รับผิดชอบ..." oninput="renderTaskList()">
+                </div>
+                <input type="month" id="filter-month" class="form-control" style="width: auto; min-width: 150px;" onchange="renderTaskList()" title="กรองตามเดือน">
+                
+                <select id="filter-category" class="form-control" style="width: auto; min-width: 170px;" onchange="renderTaskList()">
+                    <!-- Populated dynamically via JS -->
+                </select>
+                <select id="filter-status" class="form-control" style="width: auto; min-width: 150px;" onchange="renderTaskList()">
+                    <option value="all">ทุกสถานะ</option>
+                    <option value="planned">ตามแผน</option>
+                    <option value="inprogress">กำลังดำเนินการ</option>
+                    <option value="done">เสร็จสิ้น</option>
+                </select>
+            </div>
+
+            <!-- Table Container -->
+            <div class="table-container" id="table-view-panel">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 140px;">วัน/เวลา</th>
+                            <th>รายละเอียดภารกิจ</th>
+                            <th style="width: 150px;">สถานที่</th>
+                            <th style="width: 160px;">ผู้รับผิดชอบ</th>
+                            <th style="width: 140px;">สถานะ (คลิกเปลี่ยน)</th>
+                            <th class="no-print" style="width: 80px; text-align: right;">จัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="task-table-body">
+                        <!-- Rendered via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Timeline View Panel -->
+            <div id="timeline-view-panel" style="display: none;">
+                <div class="timeline-container" id="timeline-list">
+                    <!-- Rendered via JavaScript -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Modal Confirmation Box -->
+<div id="custom-modal" class="modal-overlay">
+    <div class="modal-card">
+        <div style="font-size: 2.2rem; color: var(--warning); margin-bottom: 0.75rem;">
+            <i class="fa-solid fa-circle-exclamation"></i>
+        </div>
+        <h3 id="modal-title">ยืนยันการดำเนินการ</h3>
+        <p id="modal-message">คุณแน่ใจหรือไม่ว่าต้องการดำเนินการนี้?</p>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeModal()">ยกเลิก</button>
+            <button class="btn btn-primary" id="modal-confirm-btn">ยืนยัน</button>
+        </div>
+    </div>
+</div>
+
+<!-- Settings Modal -->
+<div id="settings-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 500px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="margin: 0;"><i class="fa-solid fa-gears" style="color: var(--primary);"></i> ตั้งค่าข้อมูลระบบ</h3>
+            <button class="btn btn-secondary btn-sm" onclick="closeSettings()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        
+        <div class="settings-section">
+            <label style="font-weight: 600; color: var(--text-main); font-size: 0.95rem;">รายชื่อผู้รับผิดชอบ / ทีมงาน</label>
+            <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                <input type="text" id="new-member-input" class="form-control" placeholder="พิมพ์ชื่อผู้รับผิดชอบใหม่...">
+                <button class="btn btn-primary" onclick="addSettingItem('members')"><i class="fa-solid fa-plus"></i> เพิ่ม</button>
+            </div>
+            <div class="settings-list" id="settings-members-list"></div>
+        </div>
+
+        <div class="settings-section">
+            <label style="font-weight: 600; color: var(--text-main); font-size: 0.95rem;">หมวดหมู่งาน / ภารกิจ</label>
+            <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                <input type="text" id="new-category-input" class="form-control" placeholder="พิมพ์หมวดหมู่ใหม่...">
+                <button class="btn btn-primary" onclick="addSettingItem('categories')"><i class="fa-solid fa-plus"></i> เพิ่ม</button>
+            </div>
+            <div class="settings-list" id="settings-categories-list"></div>
+        </div>
+        
+        <p style="font-size: 0.8rem; color: var(--text-muted); text-align: left; margin-top: 1rem;"><i class="fa-solid fa-circle-info"></i> คำแนะนำ: พิมพ์แก้ไขข้อความในรายการและคลิกพื้นที่อื่นเพื่อบันทึกอัตโนมัติ</p>
+    </div>
+</div>
+
+<!-- Password Modal -->
+<div id="password-modal" class="modal-overlay">
+    <div class="modal-card">
+        <div style="font-size: 2.2rem; color: var(--danger); margin-bottom: 0.75rem;">
+            <i class="fa-solid fa-lock"></i>
+        </div>
+        <h3>ยืนยันสิทธิ์ผู้ดูแลระบบ</h3>
+        <p>กรุณาใส่รหัสผ่านเพื่อดำเนินการล้างข้อมูลทั้งหมด (Reset เป็น 0)</p>
+        <input type="password" id="reset-password-input" class="form-control" style="margin-bottom: 1.5rem; text-align: center; font-size: 1.2rem; letter-spacing: 2px;" placeholder="รหัสผ่าน">
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closePasswordModal()">ยกเลิก</button>
+            <button class="btn btn-primary" style="background-color: var(--danger); border-color: var(--danger);" onclick="verifyResetPassword()">ยืนยันล้างข้อมูล</button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="toast-notification">
+    <i class="fa-solid fa-circle-check" id="toast-icon"></i>
+    <span id="toast-message">บันทึกข้อมูลเรียบร้อยแล้ว</span>
+</div>
+
+<!-- Firebase Sync Logic & Scripts -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    const STORAGE_KEY = 'WORK_LOG_NOTO_SERIF_DATA_V1';
+    let tasksData = [];
+    let currentView = 'table';
+    let pendingModalAction = null;
+    
+    // Firebase variables
+    let app, auth, db, appId, currentUser = null;
+    let cloudSyncActive = false;
+    let unsubscribeFirestore = null;
+    let unsubscribeSettings = null;
+
+    // Dynamic Master Data State (รายชื่อและหมวดหมู่)
+    let masterData = {
+        categories: [
+            { id: 'cat1', text: '1. ภาระงานด้านบริหารกลุ่มวิศวกรรมการแพทย์', cls: 'badge-office', icon: 'fa-sitemap' },
+            { id: 'cat2', text: '2. ภาระงานด้านบริหารงานสอบเทียบ', cls: 'badge-meeting', icon: 'fa-clipboard-check' },
+            { id: 'cat3', text: '3. ภาระงานด้านบริการงานสอบเทียบ', cls: 'badge-onsite', icon: 'fa-toolbox' },
+            { id: 'cat4', text: '4. งานจัดระบบวิศวกรรมการแพทย์', cls: 'badge-tor', icon: 'fa-gears' },
+            { id: 'cat5', text: '5. งานมาตรฐานระบบบริการสุขภาพ (HS4)', cls: 'badge-meeting', icon: 'fa-certificate' },
+            { id: 'cat6', text: '6. งานกำหนดคุณลักษณะและงานพัสดุ', cls: 'badge-tor', icon: 'fa-file-signature' },
+            { id: 'cat7', text: '7. งานพัฒนาและวิชาการ', cls: 'badge-office', icon: 'fa-book-open' },
+            { id: 'cat8', text: '8. งานตอบโต้ภัยพิบัติ', cls: 'badge-onsite', icon: 'fa-truck-medical' },
+            { id: 'cat9', text: '9. คณะกรรมการและคณะทำงานในหน่วยงาน', cls: 'badge-meeting', icon: 'fa-users-gear' },
+            { id: 'cat10', text: '10. การร่วมประชุม-อบรม', cls: 'badge-meeting', icon: 'fa-chalkboard-user' },
+            { id: 'cat11', text: '11. งานสนับสนุนภารกิจอื่นๆ ของหน่วยงาน', cls: 'badge-personal', icon: 'fa-hands-holding-circle' },
+            { id: 'cat12', text: '12. งานอื่นๆ ที่ได้รับมอบหมายเพิ่มเติม', cls: 'badge-personal', icon: 'fa-list-check' }
+        ],
+        members: [
+            'นายวีระศักดิ์ โสมโยธี', 'นายสงกรานต์ ชมภู', 'นายภีมภิวัฒน์ วิไลลักษณ์', 'นายไมตรี จันทะจร',
+            'นายอรุณศักดิ์ มิคะนุช', 'นายชุมพล เรืองจิตร์', 'นายสุกฤชชา มณีวรรณ', 'นายวิทยา ภาวะดี',
+            'นายเอกชัย วงศ์สนัน', 'นายเกรียงไกร เพ็ชรสุวรรณ', 'นายโยธิน เนียมเที่ยง'
+        ]
+    };
+    const SETTINGS_KEY = 'WORK_LOG_NOTO_SERIF_SETTINGS_V1';
+
+    // Default sample data (For initial load or offline fallback)
+    const defaultData = [
+        { id: 'item-1', title: 'ตรวจสอบหน้างาน รพ.น่าน (ก่อนตรวจรับงวดสุดท้าย)', date: '2026-08-30', time: '', category: 'cat3', status: 'done', location: 'รพ.น่าน', participants: 'นายภีมภิวัฒน์ วิไลลักษณ์', notes: 'ตรวจความพร้อมและรายละเอียดหน้างานก่อนตรวจรับงวดสุดท้าย' },
+        { id: 'item-2', title: 'ปรับ TOR รถพยาบาล & TOR Air Pressure pump', date: '2026-08-31', time: '09:00', category: 'cat6', status: 'inprogress', location: 'ศบส.', participants: 'นายวีระศักดิ์ โสมโยธี', notes: 'ร่วมปรับแก้ TOR รถพยาบาล และร่างข้อกำหนดทางเทคนิค' },
+        { id: 'item-5', title: 'ตรวจรับงานงวดสุดท้าย รพ.น่าน', date: '2026-09-01', time: '15:00', category: 'cat4', status: 'planned', location: 'ศบส.', participants: 'นายไมตรี จันทะจร', notes: 'นัดตรวจรับงานหลังจากพี่วิกรเสร็จสิ้นการประชุมที่พะเยา' },
+        { id: 'item-8', title: 'เดินทางไป รพ.เชียงกลาง จ.น่าน (ช่วงบ่าย)', date: '2026-09-02', time: '13:00', category: 'cat3', status: 'planned', location: 'รพ.เชียงกลาง จ.น่าน', participants: 'นายสงกรานต์ ชมภู', notes: 'เตรียมตัวและออกเดินทางเพื่อสนับสนุนบริการงานสอบเทียบ' }
+    ];
+
+    window.initTheme = function() {
+        const savedTheme = localStorage.getItem('WORK_LOG_THEME');
+        if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.body.classList.add('dark-theme');
+            document.getElementById('dark-mode-icon').className = 'fa-solid fa-sun';
+        }
+    }
+    
+    window.toggleDarkMode = function() {
+        const isDark = document.body.classList.toggle('dark-theme');
+        document.getElementById('dark-mode-icon').className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        localStorage.setItem('WORK_LOG_THEME', isDark ? 'dark' : 'light');
+    }
+
+    window.showToast = function(message, isSuccess = true) {
+        const toast = document.getElementById('toast');
+        const msg = document.getElementById('toast-message');
+        const icon = document.getElementById('toast-icon');
+        msg.innerText = message;
+        icon.className = isSuccess ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-info';
+        toast.classList.add('active');
+        setTimeout(() => toast.classList.remove('active'), 3000);
+    }
+
+    window.openModal = function(title, message, onConfirm) {
+        document.getElementById('modal-title').innerText = title;
+        document.getElementById('modal-message').innerText = message;
+        pendingModalAction = onConfirm;
+        document.getElementById('modal-confirm-btn').onclick = () => {
+            if (pendingModalAction) pendingModalAction();
+            window.closeModal();
+        };
+        document.getElementById('custom-modal').classList.add('active');
+    }
+
+    window.closeModal = function() {
+        document.getElementById('custom-modal').classList.remove('active');
+        pendingModalAction = null;
+    }
+
+    window.switchView = function(view) {
+        currentView = view;
+        document.getElementById('view-tab-table').classList.toggle('active', view === 'table');
+        document.getElementById('view-tab-timeline').classList.toggle('active', view === 'timeline');
+        document.getElementById('table-view-panel').style.display = (view === 'table') ? 'block' : 'none';
+        document.getElementById('timeline-view-panel').style.display = (view === 'timeline') ? 'block' : 'none';
+        window.renderTaskList();
+    }
+
+    // Dropdown Menu Functions
+    window.toggleMenu = function(id, event) {
+        event.stopPropagation();
+        const currentMenu = document.getElementById('menu-' + id);
+        const isShowing = currentMenu.classList.contains('show');
+        document.querySelectorAll('.dropdown-content').forEach(el => el.classList.remove('show'));
+        if (!isShowing) currentMenu.classList.add('show');
+    }
+
+    window.addEventListener('click', function(event) {
+        // Dropdown actions in table
+        if (!event.target.closest('.dropdown')) {
+            document.querySelectorAll('.dropdown-content').forEach(el => el.classList.remove('show'));
+        }
+        
+        // Multi-select close handling
+        const container = document.getElementById('participants-container');
+        if (container && !container.contains(event.target)) {
+            const dropdown = document.getElementById('participants-dropdown');
+            if(dropdown) dropdown.classList.remove('show');
+        }
+    });
+
+    // Custom Multi-Select UI Functions
+    window.toggleMultiSelect = function(event) {
+        event.stopPropagation();
+        document.getElementById('participants-dropdown').classList.toggle('show');
+    }
+
+    window.updateParticipants = function() {
+        const checkboxes = document.querySelectorAll('#participants-dropdown input[type="checkbox"]');
+        const selected = [];
+        checkboxes.forEach(cb => {
+            if(cb.checked) {
+                selected.push(cb.value);
+            }
+        });
+        
+        document.getElementById('task-participants').value = selected.join(', ');
+        
+        const display = document.getElementById('selected-tags-display');
+        if(selected.length === 0) {
+            display.innerHTML = '<span style="color: var(--text-muted);">คลิกเลือกรายชื่อผู้รับผิดชอบ...</span>';
+        } else {
+            // Render selected names as UI pill tags
+            display.innerHTML = selected.map(name => `<span class="tag-pill"><i class="fa-solid fa-user"></i> ${name}</span>`).join('');
+        }
+    }
+
+    window.focusAddForm = function() {
+        window.resetForm();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        document.getElementById('task-title').focus();
+    }
+
+    try {
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+        if (firebaseConfig) {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+            appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        }
+    } catch (e) {
+        console.warn("Firebase config not found or invalid. Using Local Storage.", e);
+    }
+
+    async function saveTask(task) {
+        if (cloudSyncActive && currentUser && db) {
+            try {
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'worklogs', task.id);
+                await setDoc(docRef, task);
+            } catch (error) {
+                console.error("Error saving to cloud", error);
+                window.showToast("บันทึกคลาวด์ไม่สำเร็จ", false);
+            }
+        } else {
+            const idx = tasksData.findIndex(t => t.id === task.id);
+            if (idx > -1) tasksData[idx] = task; else tasksData.push(task);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(tasksData));
+            window.renderTaskList();
+            window.updateDashboardMetrics();
+        }
+    }
+
+    window.quickToggleStatus = async function(id, newStatus) {
+        const task = tasksData.find(t => t.id === id);
+        if (task) {
+            task.status = newStatus;
+            await saveTask(task);
+            if (!cloudSyncActive) window.showToast('ปรับปรุงสถานะเรียบร้อย');
+        }
+    }
+
+    window.deleteTaskItem = function(id) {
+        window.openModal(
+            'ลบรายการภารกิจ',
+            'คุณแน่ใจหรือไม่ว่าต้องการลบภารกิจนี้? ข้อมูลจะไม่สามารถกู้คืนได้',
+            async () => {
+                if (cloudSyncActive && currentUser && db) {
+                    try {
+                        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'worklogs', id);
+                        await deleteDoc(docRef);
+                        window.showToast('ลบรายการบน Cloud เรียบร้อยแล้ว');
+                    } catch (error) {
+                        console.error("Error deleting from cloud", error);
+                        window.showToast("ลบข้อมูลไม่สำเร็จ", false);
+                    }
+                } else {
+                    tasksData = tasksData.filter(t => t.id !== id);
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasksData));
+                    window.renderTaskList();
+                    window.updateDashboardMetrics();
+                    window.showToast('ลบรายการเรียบร้อยแล้ว');
+                }
+            }
+        );
+    }
+
+    window.importAndMergeJSON = function(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+            try {
+                const imported = JSON.parse(e.target.result);
+                if (Array.isArray(imported)) {
+                    let addedCount = 0;
+                    window.showToast('กำลังนำเข้าและรวมข้อมูล กรุณารอสักครู่...');
+                    
+                    for (const item of imported) {
+                        const newTask = { ...item };
+                        newTask.id = 'merged-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6);
+                        await saveTask(newTask);
+                        addedCount++;
+                    }
+                    window.showToast(`นำเข้าและรวมข้อมูลสำเร็จ ${addedCount} รายการ!`);
+                } else {
+                    window.showToast('รูปแบบไฟล์ JSON ไม่ถูกต้อง', false);
+                }
+            } catch (err) {
+                console.error("Merge error", err);
+                window.showToast('เกิดข้อผิดพลาดในการอ่านไฟล์', false);
+            }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
+    }
+
+    window.handleFormSubmit = async function(event) {
+        event.preventDefault();
+        const id = document.getElementById('task-id').value;
+        const itemData = {
+            id: id || ('task-' + Date.now()),
+            title: document.getElementById('task-title').value.trim(),
+            date: document.getElementById('task-date').value,
+            time: document.getElementById('task-time').value,
+            category: document.getElementById('task-category').value,
+            status: document.getElementById('task-status').value,
+            location: document.getElementById('task-location').value.trim(),
+            participants: document.getElementById('task-participants').value.trim(),
+            notes: document.getElementById('task-notes').value.trim()
+        };
+
+        await saveTask(itemData);
+        if(!cloudSyncActive) window.showToast(id ? 'แก้ไขข้อมูลสำเร็จ' : 'บันทึกภารกิจใหม่สำเร็จ');
+        window.resetForm();
+    }
+
+    window.editTaskItem = function(id) {
+        const item = tasksData.find(t => t.id === id);
+        if (!item) return;
+        
+        document.getElementById('task-id').value = item.id;
+        document.getElementById('task-title').value = item.title;
+        document.getElementById('task-date').value = item.date;
+        document.getElementById('task-time').value = item.time || '';
+        document.getElementById('task-category').value = item.category;
+        document.getElementById('task-status').value = item.status;
+        document.getElementById('task-location').value = item.location || '';
+        document.getElementById('task-participants').value = item.participants || '';
+        document.getElementById('task-notes').value = item.notes || '';
+        
+        // Sync Custom Multi-Select UI with data
+        const selectedParticipants = item.participants ? item.participants.split(',').map(s => s.trim()) : [];
+        document.querySelectorAll('#participants-dropdown input[type="checkbox"]').forEach(cb => {
+            cb.checked = selectedParticipants.includes(cb.value);
+        });
+        window.updateParticipants(); // Update the UI pill tags
+
+        // Highlight Edit Mode
+        document.getElementById('form-container').classList.add('edit-mode');
+        document.getElementById('form-heading').innerHTML = '<i class="fa-solid fa-pen-to-square"></i> กำลังแก้ไขข้อมูล';
+        document.getElementById('form-submit-btn').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> บันทึกการแก้ไข';
+        document.getElementById('form-submit-btn').style.backgroundColor = 'var(--warning)';
+        document.getElementById('form-submit-btn').style.borderColor = 'var(--warning)';
+        
+        document.getElementById('btn-cancel').style.display = 'inline-flex';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        document.getElementById('task-title').focus();
+    }
+
+    window.resetForm = function() {
+        document.getElementById('task-form').reset();
+        document.getElementById('task-id').value = '';
+        
+        // Remove Edit Mode highlight
+        document.getElementById('form-container').classList.remove('edit-mode');
+        document.getElementById('form-heading').innerText = 'บันทึกภารกิจใหม่';
+        document.getElementById('form-submit-btn').innerHTML = '<i class="fa-solid fa-plus"></i> เพิ่มข้อมูลภารกิจ';
+        document.getElementById('form-submit-btn').style.backgroundColor = '';
+        document.getElementById('form-submit-btn').style.borderColor = '';
+        
+        document.getElementById('btn-cancel').style.display = 'none';
+        
+        // Reset Custom Multi-Select UI
+        document.querySelectorAll('#participants-dropdown input[type="checkbox"]').forEach(cb => cb.checked = false);
+        document.getElementById('selected-tags-display').innerHTML = '<span style="color: var(--text-muted);">คลิกเลือกรายชื่อผู้รับผิดชอบ...</span>';
+        document.getElementById('task-participants').value = '';
+
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('task-date').value = today;
+    }
+
+    window.promptReset = function() {
+        document.getElementById('reset-password-input').value = '';
+        document.getElementById('password-modal').classList.add('active');
+    }
+
+    window.closePasswordModal = function() {
+        document.getElementById('password-modal').classList.remove('active');
+    }
+
+    window.verifyResetPassword = function() {
+        const pwd = document.getElementById('reset-password-input').value;
+        if (pwd === 'adminc12026') {
+            window.closePasswordModal();
+            executeReset();
+        } else {
+            window.showToast('รหัสผ่านไม่ถูกต้อง! ไม่สามารถล้างข้อมูลได้', false);
+        }
+    }
+
+    function executeReset() {
+        if (cloudSyncActive) {
+            window.openModal(
+                'ล้างข้อมูลบน Cloud (ทั้งหมด)',
+                'ระวัง! การดำเนินการนี้จะลบข้อมูลภารกิจของทีมทั้งหมดที่อยู่บนระบบ Cloud ให้เป็นศูนย์ คุณแน่ใจหรือไม่?',
+                async () => {
+                    for (const task of tasksData) {
+                        try {
+                            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'worklogs', task.id);
+                            await deleteDoc(docRef);
+                        } catch(e) {}
+                    }
+                    window.showToast('ล้างข้อมูลคลาวด์เป็นศูนย์เรียบร้อย');
+                }
+            );
+        } else {
+            window.openModal('ยืนยันล้างข้อมูลเป็นศูนย์ (Local)', 'ต้องการลบข้อมูลทั้งหมดให้ว่างเปล่า (เป็น 0) หรือไม่?', () => {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
+                tasksData = [];
+                window.renderTaskList();
+                window.updateDashboardMetrics();
+                window.resetForm();
+                window.showToast('ล้างข้อมูลเป็นศูนย์เรียบร้อย');
+            });
+        }
+    }
+
+    window.exportBackupJSON = function() {
+        const dataStr = JSON.stringify(tasksData, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Biomed_Engineering_Backup_${new Date().toISOString().slice(0,10)}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        window.showToast('ดาวน์โหลดไฟล์สำรองเรียบร้อย');
+    }
+
+    window.exportToICS = function() {
+        let icsContent = "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Biomedical Engineering Log//TH\r\nCALSCALE:GREGORIAN\r\n";
+        tasksData.forEach(t => {
+            if (!t.date) return;
+            const dateClean = t.date.replace(/-/g, '');
+            let dtStart = '', dtEnd = '';
+            if (t.time) {
+                const timeClean = t.time.replace(':', '') + '00';
+                const [h, m] = t.time.split(':').map(Number);
+                const endH = String((h + 1) % 24).padStart(2, '0');
+                const endTimeClean = `${endH}${String(m).padStart(2, '0')}00`;
+                dtStart = `DTSTART:${dateClean}T${timeClean}`;
+                dtEnd = `DTEND:${dateClean}T${endTimeClean}`;
+            } else {
+                dtStart = `DTSTART;VALUE=DATE:${dateClean}`;
+                dtEnd = `DTEND;VALUE=DATE:${dateClean}`;
+            }
+            icsContent += "BEGIN:VEVENT\r\n";
+            icsContent += `SUMMARY:${t.title}\r\n`;
+            if (t.location) icsContent += `LOCATION:${t.location}\r\n`;
+            if (t.notes || t.participants) icsContent += `DESCRIPTION:${(t.notes || '') + ' (ผู้รับผิดชอบ: ' + (t.participants || '-') + ')'}\r\n`;
+            icsContent += `${dtStart}\r\n${dtEnd}\r\n`;
+            icsContent += `UID:${t.id || Date.now()}@biomed\r\nEND:VEVENT\r\n`;
+        });
+        icsContent += "END:VCALENDAR\r\n";
+        const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `Biomed_Schedule_${new Date().toISOString().slice(0,10)}.ics`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        window.showToast('ดาวน์โหลดไฟล์ปฏิทิน .ics สำเร็จ');
+    }
+
+    window.exportToCSV = function() {
+        let csv = '\uFEFFวันที่,เวลา,หัวข้อภารกิจ,หมวดหมู่,สถานที่,ผู้รับผิดชอบ,สถานะ,บันทึกเพิ่มเติม\n';
+        tasksData.forEach(t => {
+            const catObj = masterData.categories.find(c => c.id === t.category);
+            const catInfo = catObj ? catObj.text : t.category;
+            const row = [
+                `"${t.date || ''}"`, `"${t.time || '-'}"`, `"${(t.title || '').replace(/"/g, '""')}"`,
+                `"${catInfo || ''}"`, `"${(t.location || '').replace(/"/g, '""')}"`,
+                `"${(t.participants || '').replace(/"/g, '""')}"`, `"${t.status || ''}"`,
+                `"${(t.notes || '').replace(/"/g, '""')}"`
+            ];
+            csv += row.join(',') + '\n';
+        });
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', `Biomed_Work_Report_${new Date().toISOString().slice(0,10)}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+
+    function getStatusTag(status, id) {
+        const nextStatus = status === 'planned' ? 'inprogress' : (status === 'inprogress' ? 'done' : 'planned');
+        let badgeHtml = '';
+        switch (status) {
+            case 'done': badgeHtml = '<span class="status-badge status-done"><i class="fa-solid fa-check"></i> เสร็จสิ้น</span>'; break;
+            case 'inprogress': badgeHtml = '<span class="status-badge status-inprogress"><i class="fa-solid fa-spinner fa-spin"></i> กำลังทำ</span>'; break;
+            case 'planned': default: badgeHtml = '<span class="status-badge status-planned"><i class="fa-regular fa-clock"></i> ตามแผน</span>'; break;
+        }
+        return `<div onclick="quickToggleStatus('${id}', '${nextStatus}')" style="cursor:pointer;" title="คลิกเพื่อเปลี่ยนสถานะ">${badgeHtml}</div>`;
+    }
+    
+    function formatThaiDateDisplay(dateString) {
+        if (!dateString) return '-';
+        const months = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+        const parts = dateString.split('-');
+        if (parts.length !== 3) return dateString;
+        return `${parseInt(parts[2], 10)} ${months[parseInt(parts[1], 10) - 1]} ${parseInt(parts[0], 10) + 543}`;
+    }
+
+    function getCategoryTag(categoryKey) {
+        const cat = masterData.categories.find(c => c.id === categoryKey);
+        if (cat) {
+            return `<span class="badge ${cat.cls}"><i class="fa-solid ${cat.icon}"></i> ${cat.text}</span>`;
+        }
+        return `<span class="badge badge-office"><i class="fa-solid fa-tag"></i> ${categoryKey}</span>`;
+    }
+
+    function getGoogleCalendarUrl(task) {
+        const title = encodeURIComponent(task.title);
+        const details = encodeURIComponent((task.notes || '') + '\nผู้รับผิดชอบ: ' + (task.participants || '-'));
+        const location = encodeURIComponent(task.location || '');
+        let dates = '';
+        if (task.date) {
+            const rawDate = task.date.replace(/-/g, '');
+            if (task.time) {
+                const rawTime = task.time.replace(':', '') + '00';
+                const [h, m] = task.time.split(':').map(Number);
+                const endH = String((h + 1) % 24).padStart(2, '0');
+                const rawEndTime = `${endH}${String(m).padStart(2, '0')}00`;
+                dates = `${rawDate}T${rawTime}/${rawDate}T${rawEndTime}`;
+            } else { dates = `${rawDate}/${rawDate}`; }
+        }
+        return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}&dates=${dates}`;
+    }
+
+    window.renderTaskList = function() {
+        const searchText = (document.getElementById('search-input').value || '').toLowerCase().trim();
+        const catFilter = document.getElementById('filter-category').value;
+        const statusFilter = document.getElementById('filter-status').value;
+        const monthFilter = document.getElementById('filter-month').value;
+
+        const filtered = tasksData.filter(item => {
+            const matchSearch = (item.title + ' ' + (item.location || '') + ' ' + (item.participants || '') + ' ' + (item.notes || '')).toLowerCase().includes(searchText);
+            const matchCat = (catFilter === 'all') || (item.category === catFilter);
+            const matchStatus = (statusFilter === 'all') || (item.status === statusFilter);
+            const matchMonth = (monthFilter && item.date) ? item.date.startsWith(monthFilter) : true;
+            return matchSearch && matchCat && matchStatus && matchMonth;
+        }).sort((a, b) => {
+            const keyA = (a.date || '') + ' ' + (a.time || '00:00');
+            const keyB = (b.date || '') + ' ' + (b.time || '00:00');
+            return keyA.localeCompare(keyB);
+        });
+
+        const tbody = document.getElementById('task-table-body');
+        tbody.innerHTML = '';
+
+        if (filtered.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 2.5rem 1rem; color: var(--text-muted);"><i class="fa-regular fa-folder-open" style="font-size: 2.2rem; display: block; margin-bottom: 0.5rem; opacity: 0.5;"></i>ไม่พบข้อมูลภารกิจที่ตรงกับเงื่อนไขการค้นหา</td></tr>`;
+            return;
+        }
+
+        filtered.forEach(task => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>
+                    <strong style="color: var(--primary); font-size: 0.95rem;">${formatThaiDateDisplay(task.date)}</strong>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.15rem;">
+                        ${task.time ? '<i class="fa-regular fa-clock"></i> ' + task.time + ' น.' : '<i class="fa-solid fa-sun"></i> ตลอดวัน'}
+                    </div>
+                </td>
+                <td>
+                    <div style="font-weight: 700; font-size: 1rem; color: var(--text-main); margin-bottom: 0.25rem;">${task.title}</div>
+                    <div style="margin-bottom: 0.35rem;">${getCategoryTag(task.category)}</div>
+                    ${task.notes ? `<div style="font-size: 0.85rem; color: var(--text-muted);"><i class="fa-regular fa-note-sticky"></i> ${task.notes}</div>` : ''}
+                </td>
+                <td>${task.location ? `<i class="fa-solid fa-location-dot" style="color: var(--accent); margin-right: 0.25rem;"></i> ${task.location}` : '<span style="color:var(--text-light);">-</span>'}</td>
+                <td>${task.participants ? `<i class="fa-solid fa-user-tie" style="color: var(--text-muted); margin-right: 0.25rem;"></i> ${task.participants}` : '<span style="color:var(--text-light);">-</span>'}</td>
+                <td>${getStatusTag(task.status, task.id)}</td>
+                <td class="no-print" style="text-align: right;">
+                    <div class="dropdown">
+                        <button class="dropdown-btn" onclick="toggleMenu('${task.id}', event)" title="เมนูจัดการ">
+                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </button>
+                        <div id="menu-${task.id}" class="dropdown-content">
+                            <a onclick="editTaskItem('${task.id}')"><i class="fa-solid fa-pen-to-square" style="color: var(--warning);"></i> แก้ไขภารกิจ</a>
+                            <a href="${getGoogleCalendarUrl(task)}" target="_blank"><i class="fa-brands fa-google" style="color: var(--info);"></i> ลงปฏิทิน (Calendar)</a>
+                            <a class="text-danger" onclick="deleteTaskItem('${task.id}')"><i class="fa-solid fa-trash-can"></i> ลบรายการ</a>
+                        </div>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        // Timeline rendering
+        const timelineList = document.getElementById('timeline-list');
+        timelineList.innerHTML = '';
+        const groups = {};
+        filtered.forEach(t => { if (!groups[t.date]) groups[t.date] = []; groups[t.date].push(t); });
+        
+        Object.keys(groups).forEach(dateStr => {
+            const groupEl = document.createElement('div');
+            groupEl.className = 'timeline-day-group';
+            let itemsHtml = '';
+            groups[dateStr].forEach(item => {
+                itemsHtml += `
+                    <div class="timeline-item-card">
+                        <div style="flex: 1;">
+                            <div style="font-weight: 700; color: var(--text-main);">${item.title}</div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">
+                                <span><i class="fa-regular fa-clock"></i> ${item.time ? item.time + ' น.' : 'ตลอดวัน'}</span>
+                                ${item.location ? `<span style="margin-left: 0.75rem;"><i class="fa-solid fa-location-dot"></i> ${item.location}</span>` : ''}
+                                ${item.participants ? `<span style="margin-left: 0.75rem;"><i class="fa-solid fa-user-tie"></i> ${item.participants}</span>` : ''}
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            ${getStatusTag(item.status, item.id)}
+                            <div class="dropdown no-print">
+                                <button class="dropdown-btn" onclick="toggleMenu('tl-${item.id}', event)" title="เมนูจัดการ">
+                                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                                </button>
+                                <div id="menu-tl-${item.id}" class="dropdown-content">
+                                    <a onclick="editTaskItem('${item.id}')"><i class="fa-solid fa-pen-to-square" style="color: var(--warning);"></i> แก้ไขภารกิจ</a>
+                                    <a href="${getGoogleCalendarUrl(item)}" target="_blank"><i class="fa-brands fa-google" style="color: var(--info);"></i> ลงปฏิทิน</a>
+                                    <a class="text-danger" onclick="deleteTaskItem('${item.id}')"><i class="fa-solid fa-trash-can"></i> ลบรายการ</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            groupEl.innerHTML = `
+                <div class="timeline-day-header">
+                    <span><i class="fa-regular fa-calendar-days"></i> ${formatThaiDateDisplay(dateStr)}</span>
+                    <span style="font-size: 0.85rem; font-weight: 500; color: var(--text-muted);">${groups[dateStr].length} ภารกิจ</span>
+                </div>
+                <div class="timeline-day-items">${itemsHtml}</div>
+            `;
+            timelineList.appendChild(groupEl);
+        });
+    }
+
+    window.updateDashboardMetrics = function() {
+        document.getElementById('metric-total').innerText = tasksData.length;
+        document.getElementById('metric-pending').innerText = tasksData.filter(t => t.status === 'planned').length;
+        document.getElementById('metric-completed').innerText = tasksData.filter(t => t.status === 'done').length;
+        
+        // Count Onsite & Disasters (Dynamic Categories mapping)
+        const onsiteCount = tasksData.filter(t => {
+            const cat = masterData.categories.find(c => c.id === t.category);
+            return cat && (cat.cls === 'badge-onsite' || cat.cls === 'badge-tor'); 
+        }).length;
+        document.getElementById('metric-onsite').innerText = onsiteCount;
+    }
+
+    // --- Dynamic Settings Management ---
+    window.openSettings = function() {
+        renderSettingsLists();
+        document.getElementById('settings-modal').classList.add('active');
+    }
+
+    window.closeSettings = function() {
+        document.getElementById('settings-modal').classList.remove('active');
+        renderDynamicDropdowns(); // Apply changes
+        window.renderTaskList();  // Refresh view
+    }
+
+    function renderSettingsLists() {
+        const memList = document.getElementById('settings-members-list');
+        memList.innerHTML = masterData.members.map((m, idx) => `
+            <div class="settings-item">
+                <input type="text" value="${m}" onchange="updateSettingItem('members', ${idx}, this.value)">
+                <button class="dropdown-btn" onclick="deleteSettingItem('members', ${idx})" style="color:var(--danger); padding:0.2rem;" title="ลบ"><i class="fa-solid fa-trash-can"></i></button>
+            </div>
+        `).join('');
+
+        const catList = document.getElementById('settings-categories-list');
+        catList.innerHTML = masterData.categories.map((c, idx) => `
+            <div class="settings-item">
+                <input type="text" value="${c.text}" onchange="updateSettingItem('categories', ${idx}, this.value)">
+                <button class="dropdown-btn" onclick="deleteSettingItem('categories', ${idx})" style="color:var(--danger); padding:0.2rem;" title="ลบ"><i class="fa-solid fa-trash-can"></i></button>
+            </div>
+        `).join('');
+    }
+
+    window.addSettingItem = async function(type) {
+        const input = document.getElementById(type === 'members' ? 'new-member-input' : 'new-category-input');
+        const val = input.value.trim();
+        if(!val) return;
+        
+        if (type === 'members') {
+            masterData.members.push(val);
+        } else {
+            masterData.categories.push({
+                id: 'cat_' + Date.now(),
+                text: val,
+                cls: 'badge-office',
+                icon: 'fa-tag'
+            });
+        }
+        input.value = '';
+        await saveSettings();
+        renderSettingsLists();
+    }
+
+    window.updateSettingItem = async function(type, idx, newVal) {
+        if(!newVal.trim()) return;
+        if(type === 'members') masterData.members[idx] = newVal.trim();
+        else masterData.categories[idx].text = newVal.trim();
+        await saveSettings();
+    }
+
+    window.deleteSettingItem = async function(type, idx) {
+        if(confirm('ยืนยันการลบรายการนี้? (ภารกิจเก่าที่ใช้ข้อมูลนี้จะยังแสดงชื่อเดิมค้างไว้)')) {
+            if(type === 'members') masterData.members.splice(idx, 1);
+            else masterData.categories.splice(idx, 1);
+            await saveSettings();
+            renderSettingsLists();
+        }
+    }
+
+    async function saveSettings() {
+        if (cloudSyncActive && currentUser && db) {
+            try {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'master'), masterData);
+            } catch (e) { console.error("Error saving settings", e); }
+        } else {
+            localStorage.setItem(SETTINGS_KEY, JSON.stringify(masterData));
+        }
+    }
+
+    function renderDynamicDropdowns() {
+        // Form Category
+        const catSelect = document.getElementById('task-category');
+        const currentCatVal = catSelect.value;
+        catSelect.innerHTML = masterData.categories.map(c => `<option value="${c.id}">${c.text}</option>`).join('');
+        if(currentCatVal && masterData.categories.find(c => c.id === currentCatVal)) catSelect.value = currentCatVal;
+
+        // Filter Category
+        const filterCatSelect = document.getElementById('filter-category');
+        const currentFilterVal = filterCatSelect.value;
+        filterCatSelect.innerHTML = `<option value="all">ทุกหมวดหมู่</option>` + masterData.categories.map(c => `<option value="${c.id}">${c.text}</option>`).join('');
+        if(currentFilterVal && (currentFilterVal === 'all' || masterData.categories.find(c => c.id === currentFilterVal))) filterCatSelect.value = currentFilterVal;
+
+        // Participants Multi-select
+        const partDrop = document.getElementById('participants-dropdown');
+        partDrop.innerHTML = masterData.members.map(m => `
+            <label class="multi-select-option">
+                <input type="checkbox" value="${m}" onchange="updateParticipants()">
+                ${m}
+            </label>
+        `).join('');
+        
+        // Refresh checkboxes to sync with existing task-participants input
+        if (typeof window.updateParticipants === 'function' && document.getElementById('task-participants').value) {
+            const selectedParticipants = document.getElementById('task-participants').value.split(',').map(s => s.trim());
+            document.querySelectorAll('#participants-dropdown input[type="checkbox"]').forEach(cb => {
+                cb.checked = selectedParticipants.includes(cb.value);
+            });
+            window.updateParticipants();
+        }
+    }
+
+    // Init & Auth Flow (Following strict rules for Firebase usage)
+    async function startApp() {
+        window.initTheme();
+        window.resetForm();
+        
+        if (auth) {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (err) {
+                console.error("Firebase Auth Error", err);
+            }
+
+            onAuthStateChanged(auth, (user) => {
+                currentUser = user;
+                if (user) {
+                    cloudSyncActive = true;
+                    document.getElementById('cloud-status-badge').className = 'cloud-badge';
+                    document.getElementById('cloud-status-badge').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Team Cloud Sync';
+                    document.getElementById('btn-reset').style.display = 'none'; 
+
+                    // Listen to Settings from Cloud
+                    const settingsRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'master');
+                    if (unsubscribeSettings) unsubscribeSettings();
+                    unsubscribeSettings = onSnapshot(settingsRef, (docSnap) => {
+                        if (docSnap.exists()) {
+                            masterData = docSnap.data();
+                        } else {
+                            setDoc(settingsRef, masterData); // Save defaults first time
+                        }
+                        renderDynamicDropdowns();
+                        window.renderTaskList();
+                    });
+
+                    const tasksRef = collection(db, 'artifacts', appId, 'public', 'data', 'worklogs');
+                    if (unsubscribeFirestore) unsubscribeFirestore();
+                    unsubscribeFirestore = onSnapshot(tasksRef, (snapshot) => {
+                        tasksData = [];
+                        snapshot.forEach(doc => { tasksData.push(doc.data()); });
+                        window.renderTaskList();
+                        window.updateDashboardMetrics();
+                    }, (error) => {
+                        console.error("Firestore Error", error);
+                    });
+                } else {
+                    cloudSyncActive = false;
+                }
+            });
+        } else {
+            // Local Mode Initial Load
+            const savedSettings = localStorage.getItem(SETTINGS_KEY);
+            if(savedSettings) masterData = JSON.parse(savedSettings);
+            renderDynamicDropdowns();
+
+            const localData = localStorage.getItem(STORAGE_KEY);
+            tasksData = localData ? JSON.parse(localData) : [...defaultData];
+            window.renderTaskList();
+            window.updateDashboardMetrics();
+        }
+    }
+
+    window.addEventListener('load', startApp);
+
+</script>
+</body>
+</html>
